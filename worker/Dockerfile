@@ -8,7 +8,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
 WORKDIR /comfyui
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git ffmpeg libsndfile1 \
+        git ffmpeg libsndfile1 openssh-server \
+    && mkdir -p /var/run/sshd \
     && rm -rf /var/lib/apt/lists/*
 
 RUN cd custom_nodes && \

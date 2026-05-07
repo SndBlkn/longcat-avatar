@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Optional sshd for debugging / interactive workflow runs in regular pods.
+if [[ -n "${PUBLIC_KEY:-}" ]]; then
+    echo "[boot] PUBLIC_KEY set; configuring sshd..."
+    mkdir -p /root/.ssh
+    chmod 700 /root/.ssh
+    echo "$PUBLIC_KEY" > /root/.ssh/authorized_keys
+    chmod 600 /root/.ssh/authorized_keys
+    sed -i 's/#\?PermitRootLogin.*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config || true
+    ssh-keygen -A
+    /usr/sbin/sshd
+fi
+
 cd /comfyui
 
 echo "[boot] Starting ComfyUI server in background..."
