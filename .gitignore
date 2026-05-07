@@ -1,0 +1,24 @@
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Env / secrets
+.env
+.env.*
+!.env.local.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Claude local settings (per-machine)
+.claude/settings.local.json

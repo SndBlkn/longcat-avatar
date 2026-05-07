@@ -1,0 +1,10 @@
+runpod_volume:
+  base_path: /runpod-volume/models/
+
+  diffusion_models: diffusion_models/
+  vae: vae/
+  text_encoders: text_encoders/
+  loras: loras/
+  wav2vec: wav2vec/
+  clip: text_encoders/
+  checkpoints: diffusion_models/
