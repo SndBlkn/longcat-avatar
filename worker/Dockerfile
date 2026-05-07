@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 WORKDIR /comfyui
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git ffmpeg libsndfile1 openssh-server \
+        git ffmpeg libsndfile1 openssh-server curl ca-certificates \
     && mkdir -p /var/run/sshd \
     && rm -rf /var/lib/apt/lists/*
 
