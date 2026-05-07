@@ -22,7 +22,6 @@ RUN pip install --no-cache-dir \
         -r custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt
 
 RUN pip install --no-cache-dir \
-        sageattention==2.1.1 \
         librosa==0.10.2 \
         soundfile==0.12.1 \
         einops==0.8.0 \
