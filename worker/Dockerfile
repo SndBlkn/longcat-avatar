@@ -17,12 +17,12 @@ RUN cd custom_nodes && \
     git clone --depth 1 https://github.com/kijai/ComfyUI-KJNodes.git && \
     git clone --depth 1 https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git
 
-RUN pip install --no-cache-dir \
+RUN python -m pip install --no-cache-dir \
         -r custom_nodes/ComfyUI-WanVideoWrapper/requirements.txt \
         -r custom_nodes/ComfyUI-KJNodes/requirements.txt \
         -r custom_nodes/ComfyUI-VideoHelperSuite/requirements.txt
 
-RUN pip install --no-cache-dir \
+RUN python -m pip install --no-cache-dir \
         librosa==0.10.2 \
         soundfile==0.12.1 \
         einops==0.8.0 \
