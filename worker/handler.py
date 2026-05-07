@@ -50,7 +50,7 @@ MODEL_FILENAME = os.environ.get(
 )
 LORA_FILENAME = os.environ.get(
     "LORA_FILENAME",
-    "LongCat_distill_lora_rank128_bf16.safetensors",
+    "LongCat_distill_lora_alpha64_bf16.safetensors",
 )
 
 DEFAULT_NEGATIVE = (

@@ -20,7 +20,7 @@ The volume layout afterwards:
     ├── text_encoders/
     │   └── umt5-xxl-enc-bf16.safetensors
     ├── loras/
-    │   └── LongCat_distill_lora_rank128_bf16.safetensors
+    │   └── LongCat_distill_lora_alpha64_bf16.safetensors
     └── wav2vec/
         └── wav2vec2-chinese-base_fp16.safetensors
 """
@@ -56,9 +56,9 @@ MODELS: list[ModelFile] = [
     # Distill LoRA (speeds up sampling)
     ModelFile(
         repo_id="Kijai/LongCat-Video_comfy",
-        repo_path="LongCat_distill_lora_rank128_bf16.safetensors",
+        repo_path="LongCat_distill_lora_alpha64_bf16.safetensors",
         local_subdir="loras",
-        local_filename="LongCat_distill_lora_rank128_bf16.safetensors",
+        local_filename="LongCat_distill_lora_alpha64_bf16.safetensors",
     ),
     # WAN VAE
     ModelFile(

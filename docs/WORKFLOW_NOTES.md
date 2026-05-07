@@ -13,7 +13,7 @@ Source: `kijai/ComfyUI-WanVideoWrapper/example_workflows/LongCatAvatar_audio_ima
 | Logical type         | Filename                                                        | ComfyUI subfolder       | HF source                                                     | Size  |
 |----------------------|-----------------------------------------------------------------|-------------------------|---------------------------------------------------------------|-------|
 | Diffusion (avatar)   | `LongCat-Avatar-single_fp8_e4m3fn_scaled_mixed_KJ.safetensors`  | `diffusion_models/LongCat/` | `Kijai/LongCat-Video_comfy/Avatar/`                       | ~14GB |
-| Distill LoRA         | `LongCat_distill_lora_rank128_bf16.safetensors`                 | `loras/`                | `Kijai/LongCat-Video_comfy/`                                  | ~600MB |
+| Distill LoRA         | `LongCat_distill_lora_alpha64_bf16.safetensors`                 | `loras/`                | `Kijai/LongCat-Video_comfy/`                                  | ~1.2GB |
 | WAN VAE              | `Wan2_1_VAE_bf16.safetensors`                                   | `vae/`                  | `Kijai/WanVideo_comfy/`                                       | ~250MB |
 | Text encoder (UMT5)  | `umt5-xxl-enc-bf16.safetensors`                                 | `text_encoders/`        | `Kijai/WanVideo_comfy/`                                       | ~10GB |
 | Speech embed (wav2vec)| `wav2vec2-chinese-base_fp16.safetensors`                       | `wav2vec/`              | `Kijai/wav2vec2_safetensors/`                                 | ~190MB |
