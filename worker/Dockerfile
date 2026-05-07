@@ -12,6 +12,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && mkdir -p /var/run/sshd \
     && rm -rf /var/lib/apt/lists/*
 
+# Replace the base image's pip 22.0.2 (broken resolvelib AssertionError) with
+# a current pip wired into python3.11, which is what `python` resolves to and
+# what ComfyUI actually runs under.
+RUN curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
+    python /tmp/get-pip.py && \
+    rm /tmp/get-pip.py
+
 # The base image ships ComfyUI 0.3.30; KJNodes/WanVideoWrapper require a
 # newer ComfyUI (apply_rope1, comfy_api). Pull master.
 RUN git fetch origin && git reset --hard origin/master && \
