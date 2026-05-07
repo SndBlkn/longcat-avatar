@@ -52,6 +52,9 @@ LORA_FILENAME = os.environ.get(
     "LORA_FILENAME",
     "LongCat_distill_lora_alpha64_bf16.safetensors",
 )
+# WanVideoWrapper attention mode. Default to sdpa (always available); override
+# to "sageattn" if you've baked sageattention 2.x into the image.
+ATTENTION_MODE = os.environ.get("ATTENTION_MODE", "sdpa")
 
 DEFAULT_NEGATIVE = (
     "Close-up, bright tones, overexposed, static, blurred details, subtitles, "
@@ -135,6 +138,7 @@ def _patch_workflow(
     _set_widget(workflow, NODE_OVERLAP, 0, int(overlap))
     _set_widget(workflow, NODE_CFG, 0, float(cfg))
     _set_widget(workflow, NODE_MODEL_LOADER, 0, MODEL_FILENAME)
+    _set_widget(workflow, NODE_MODEL_LOADER, 4, ATTENTION_MODE)
     _set_widget(workflow, NODE_LORA_SELECT, 0, LORA_FILENAME)
     if audio_max_samples is not None:
         _set_widget(workflow, NODE_TRIM_AUDIO, 1, int(audio_max_samples))
@@ -164,7 +168,7 @@ def _is_widget_spec(spec) -> bool:
     if isinstance(type_def, list):
         return True
     # Forceable widgets: scalar types render as on-canvas controls.
-    return type_def in {"STRING", "INT", "FLOAT", "BOOLEAN"}
+    return type_def in {"STRING", "INT", "FLOAT", "BOOLEAN", "COMBO"}
 
 
 def _consumes_extra_control_widget(spec) -> bool:
@@ -261,26 +265,47 @@ def _workflow_to_api_format(workflow: dict) -> dict:
                 ordered_inputs.append((name, spec))
 
         inputs_in_node = {inp["name"]: inp for inp in (node.get("inputs") or [])}
-        wv_iter = iter(node.get("widgets_values") or [])
+        wv = node.get("widgets_values")
+        wv_is_dict = isinstance(wv, dict)
+        wv_iter = iter(wv or [])
 
         api_inputs: dict = {}
         for name, spec in ordered_inputs:
+            is_widget = _is_widget_spec(spec)
             if name in inputs_in_node:
                 # This input is wired to another node — resolve the link.
                 link_id = inputs_in_node[name].get("link")
-                if link_id is None:
-                    continue
-                src = links_by_id.get(link_id)
-                if not src:
-                    continue
-                from_id, from_slot = _walk_through_proxies(
-                    src[0], src[1], nodes_by_id, links_by_id, workflow,
-                )
-                api_inputs[name] = [str(from_id), from_slot]
+                if link_id is not None:
+                    src = links_by_id.get(link_id)
+                    if src:
+                        from_id, from_slot = _walk_through_proxies(
+                            src[0], src[1], nodes_by_id, links_by_id, workflow,
+                        )
+                        api_inputs[name] = [str(from_id), from_slot]
+                # Widget-able inputs (e.g. width/height on ImageResizeKJv2)
+                # still get a slot in widgets_values even when wired. Consume
+                # it so the positional iter stays aligned with the schema.
+                if is_widget and not wv_is_dict:
+                    try:
+                        next(wv_iter)
+                    except StopIteration:
+                        pass
+                    if _consumes_extra_control_widget(spec):
+                        try:
+                            next(wv_iter)
+                        except StopIteration:
+                            pass
                 continue
 
-            if not _is_widget_spec(spec):
+            if not is_widget:
                 continue  # unconnected optional connection input
+
+            if wv_is_dict:
+                # Newer ComfyUI nodes (e.g. VHS_VideoCombine) serialize
+                # widgets_values as a {name: value} dict.
+                if name in wv:
+                    api_inputs[name] = wv[name]
+                continue
 
             try:
                 value = next(wv_iter)

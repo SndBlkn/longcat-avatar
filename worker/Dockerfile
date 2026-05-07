@@ -12,6 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && mkdir -p /var/run/sshd \
     && rm -rf /var/lib/apt/lists/*
 
+# The base image ships ComfyUI 0.3.30; KJNodes/WanVideoWrapper require a
+# newer ComfyUI (apply_rope1, comfy_api). Pull master.
+RUN git fetch origin && git reset --hard origin/master && \
+    python -m pip install --no-cache-dir -r requirements.txt
+
 RUN cd custom_nodes && \
     git clone --depth 1 https://github.com/kijai/ComfyUI-WanVideoWrapper.git && \
     git clone --depth 1 https://github.com/kijai/ComfyUI-KJNodes.git && \
